@@ -42,5 +42,6 @@ helm template -n kargo kargo "${KARGO_DIR}" \
   --values "$values_file" \
   | kubectl apply -f -
 
-# Apply Kargo project, tasks, warehouse, and stages for the management repo
-kubectl apply -f "${SCRIPT_DIR}/kargo/"
+# Apply Kargo project manifests (Project, Tasks, Warehouse, Stage, PAT secret)
+kubectl create namespace homelab-management --dry-run=client -o yaml | kubectl apply -f -
+kubectl apply -f "${SCRIPT_DIR}/kargo/manifests/"

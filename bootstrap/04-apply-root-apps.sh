@@ -11,4 +11,4 @@
 set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-kubectl apply -f "${SCRIPT_DIR}/manifests/"
+kubectl apply -f "${SCRIPT_DIR}/argocd/manifests/"
