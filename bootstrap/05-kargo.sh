@@ -38,7 +38,7 @@ printf 'Kargo admin password written to %s\n' "$password_file" >&2
 
 kubectl create namespace kargo --dry-run=client -o yaml | kubectl apply -f -
 helm template -n kargo kargo "${KARGO_DIR}" \
-  --values "${KARGO_DIR}/config/envs/prod/service.yaml" \
+  --values "${KARGO_DIR}/config/envs/management/service.yaml" \
   --values "$values_file" \
   | kubectl apply -f -
 

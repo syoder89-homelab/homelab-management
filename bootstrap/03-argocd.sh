@@ -13,5 +13,5 @@ helm dependency update "${ARGOCD_DIR}"
 
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 helm template -n argocd argocd "${ARGOCD_DIR}" \
-  --values "${ARGOCD_DIR}/config/envs/prod/service.yaml" \
+  --values "${ARGOCD_DIR}/config/envs/management/service.yaml" \
   | kubectl apply -f -
