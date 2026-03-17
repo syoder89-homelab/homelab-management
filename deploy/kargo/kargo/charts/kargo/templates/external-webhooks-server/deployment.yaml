@@ -1,0 +1,91 @@
+---
+# Source: kargo/charts/kargo/templates/external-webhooks-server/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kargo-external-webhooks-server
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-1.9.3
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v1.9.3"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: external-webhooks-server
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kargo
+      app.kubernetes.io/instance: kargo
+      app.kubernetes.io/component: external-webhooks-server
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: kargo-1.9.3
+        app.kubernetes.io/name: kargo
+        app.kubernetes.io/instance: kargo
+        app.kubernetes.io/version: "v1.9.3"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: external-webhooks-server
+      annotations:
+        configmap/checksum: f89e33c4b0037b83eaf684f1e67fc7823bb06b5c21cf63e20cf11b096aa8af19
+    spec:
+      serviceAccount: kargo-external-webhooks-server
+      containers:
+      - name: webhooks-server
+        image: ghcr.io/akuity/kargo:v1.9.3
+        imagePullPolicy: IfNotPresent
+        command: ["/sbin/tini", "--", "/usr/local/bin/kargo"]
+        args: ["external-webhooks-server"]
+        env:
+        - name: GOMEMLIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: webhooks-server
+              divisor: "1"
+              resource: limits.memory
+        - name: GOMAXPROCS
+          valueFrom:
+            resourceFieldRef:
+              containerName: webhooks-server
+              divisor: "1"
+              resource: limits.cpu
+        envFrom:
+        - configMapRef:
+            name: kargo-external-webhooks-server
+        ports:
+        - containerPort: 8080
+          name: "https"
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            port: 8080
+            path: /healthz
+          initialDelaySeconds: 10
+        readinessProbe:
+          httpGet:
+            scheme: HTTPS
+            port: 8080
+            path: /healthz
+          initialDelaySeconds: 5
+        volumeMounts:
+        - mountPath: /etc/kargo
+          name: config
+          readOnly: true
+        resources:
+          {}
+      volumes:
+      - name: config
+        projected:
+          sources:
+            - secret:
+                name: kargo-external-webhooks-server-cert
+                items:
+                - key: tls.crt
+                  path: tls.crt
+                - key: tls.key
+                  path: tls.key
