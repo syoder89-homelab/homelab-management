@@ -354,6 +354,12 @@ spec:
             type: RuntimeDefault
         workingDir: /home/argocd
         volumeMounts:
+        - mountPath: /var/run/secrets/tokens
+          name: gcp-token
+          readOnly: true
+        - mountPath: /var/run/secrets/gcp
+          name: gcp-credential-config
+          readOnly: true
         - mountPath: /app/config/controller/tls
           name: argocd-repo-server-tls
         - mountPath: /home/argocd
@@ -374,6 +380,16 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
       volumes:
+      - name: gcp-token
+        projected:
+          sources:
+          - serviceAccountToken:
+              audience: //iam.googleapis.com/projects/103195527972/locations/global/workloadIdentityPools/homelab-k8s-pool/providers/homelab-k8s-oidc
+              expirationSeconds: 3600
+              path: gcp-token
+      - name: gcp-credential-config
+        secret:
+          secretName: argocd-gcp-wif-config
       - name: argocd-home
         emptyDir: {}
       - name: argocd-application-controller-tmp

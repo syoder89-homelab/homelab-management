@@ -14,7 +14,8 @@ metadata:
     app.kubernetes.io/part-of: argocd
     app.kubernetes.io/version: "v3.3.1"
 spec:
-  type: LoadBalancer 
+  type: LoadBalancer  
+  externalTrafficPolicy: Cluster
   sessionAffinity: None
   ports:
   - name: http
