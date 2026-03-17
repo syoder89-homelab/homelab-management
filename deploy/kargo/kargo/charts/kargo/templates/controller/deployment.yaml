@@ -1,0 +1,73 @@
+---
+# Source: kargo/charts/kargo/templates/controller/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kargo-controller
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-1.9.3
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v1.9.3"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: controller
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kargo
+      app.kubernetes.io/instance: kargo
+      app.kubernetes.io/component: controller
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: kargo-1.9.3
+        app.kubernetes.io/name: kargo
+        app.kubernetes.io/instance: kargo
+        app.kubernetes.io/version: "v1.9.3"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: controller
+      annotations:
+        configmap/checksum: ec04e1afccb00f8d7d5a3d076a4425365f1b30ef597dd4389188dab9ba89a63f
+    spec:
+      serviceAccount: kargo-controller
+      containers:
+      - name: controller
+        image: ghcr.io/akuity/kargo:v1.9.3
+        imagePullPolicy: IfNotPresent
+        command: ["/sbin/tini", "--", "/usr/local/bin/kargo"]
+        args: ["controller"]
+        env:
+        - name: GOMEMLIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: controller
+              divisor: "1"
+              resource: limits.memory
+        - name: GOMAXPROCS
+          valueFrom:
+            resourceFieldRef:
+              containerName: controller
+              divisor: "1"
+              resource: limits.cpu
+        envFrom:
+        - configMapRef:
+            name: kargo-controller
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-data
+        - mountPath: /etc/kargo/git
+          name: git
+          readOnly: true
+        resources:
+          {}
+      volumes:
+      - name: tmp-data
+        emptyDir: {}
+      - name: git
+        secret:
+          secretName: kargo-github-signing-key
+          defaultMode: 0644
