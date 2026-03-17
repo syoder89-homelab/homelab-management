@@ -1,0 +1,74 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: management-root
+  namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: homelab-management:management-application-generator
+spec:
+  destination:
+    name: in-cluster
+  project: management
+  source:
+    directory:
+      recurse: true
+    path: deploy/
+    repoURL: https://github.com/syoder89-homelab/homelab-management
+    targetRevision: env/management/application-generator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-infra
+  namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: homelab-infra:prod-application-generator
+spec:
+  destination:
+    name: in-cluster
+  project: infra
+  source:
+    directory:
+      recurse: true
+    path: deploy/
+    repoURL: https://github.com/syoder89-homelab/homelab-infra
+    targetRevision: env/prod/application-generator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-apps
+  namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: homelab-apps:prod-application-generator
+spec:
+  destination:
+    name: in-cluster
+  project: apps
+  source:
+    directory:
+      recurse: true
+    path: deploy/
+    repoURL: https://github.com/syoder89-homelab/homelab-apps
+    targetRevision: env/prod/application-generator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true

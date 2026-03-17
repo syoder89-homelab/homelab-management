@@ -1,0 +1,10 @@
+apiVersion: v2
+name: onepassword-connect
+description: An Umbrella Helm chart for deploying 1Password Connect
+type: application
+version: "0.0.2"
+appVersion: "2.3.0"
+dependencies:
+  - name: connect
+    version: "2.3.0"
+    repository: "https://1password.github.io/connect-helm-charts"

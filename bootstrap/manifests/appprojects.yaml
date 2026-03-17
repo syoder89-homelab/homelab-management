@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: management
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Management Plane Project
+  clusterResourceWhitelist:
+  - group: "*"
+    kind: '*'
+  destinations:
+  - name: '*'
+    namespace: '*'
+    server: '*'
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  sourceRepos:
+  - https://github.com/syoder89-homelab/homelab-management.git
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: infra
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Infrastructure Project
+  clusterResourceWhitelist:
+  - group: "*"
+    kind: '*'
+  destinations:
+  - name: '*'
+    namespace: '*'
+    server: '*'
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  sourceRepos:
+  - https://github.com/syoder89-homelab/homelab-infra.git
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apps
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Applications Project
+  clusterResourceWhitelist:
+  - group: "*"
+    kind: '*'
+  destinations:
+  - name: '*'
+    namespace: '*'
+    server: '*'
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  sourceRepos:
+  - https://github.com/syoder89-homelab/homelab-apps.git

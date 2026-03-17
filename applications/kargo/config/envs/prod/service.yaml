@@ -1,0 +1,4 @@
+kargo:
+  api:
+    service:
+      type: LoadBalancer

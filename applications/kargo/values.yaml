@@ -1,0 +1,11 @@
+kargo:
+  api:
+    secret:
+      name: kargo-api
+  controller:
+    gitClient:
+      name: Scott yoder
+      email: syoder89@gmail.com
+      signingKeySecret:
+        name: kargo-github-signing-key
+        type: gpg

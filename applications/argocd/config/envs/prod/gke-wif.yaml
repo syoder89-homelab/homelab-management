@@ -1,0 +1,34 @@
+# ArgoCD GKE Workload Identity Federation configuration
+#
+# Mounts a projected K8s SA token and GCP credential config into the
+# application-controller so `argocd-k8s-auth gcp` can authenticate
+# to GKE without long-lived service account keys.
+#
+# REQUIRED: Replace WIF_AUDIENCE below with the value from:
+#   cd homelab-infra/terraform/bootstrap
+#   terraform output -raw argocd_wif_provider
+#   # Prepend "//iam.googleapis.com/" to the output
+#
+argo-cd:
+  controller:
+    volumes:
+      # Projected K8s SA token for GCP WIF token exchange
+      - name: gcp-token
+        projected:
+          sources:
+            - serviceAccountToken:
+                # Must match the audience in the credential config
+                audience: "//iam.googleapis.com/projects/103195527972/locations/global/workloadIdentityPools/homelab-k8s-pool/providers/homelab-k8s-oidc"
+                expirationSeconds: 3600
+                path: gcp-token
+      # GCP credential config from the argocd-gcp-wif-config Secret (via 1Password)
+      - name: gcp-credential-config
+        secret:
+          secretName: argocd-gcp-wif-config
+    volumeMounts:
+      - name: gcp-token
+        mountPath: /var/run/secrets/tokens
+        readOnly: true
+      - name: gcp-credential-config
+        mountPath: /var/run/secrets/gcp
+        readOnly: true

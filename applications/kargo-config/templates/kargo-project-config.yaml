@@ -1,0 +1,11 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: ProjectConfig
+metadata:
+  name: homelab-management
+  namespace: homelab-management
+spec:
+  promotionPolicies:
+  - stageSelector:
+      # Apply to all stages matching a glob pattern
+      name: "glob:management-*"
+    autoPromotionEnabled: true

@@ -1,0 +1,8 @@
+envs:
+  management:
+    sources:
+      direct: true
+    asPR: true
+    isEphemeral: false
+    targetBranchPrefix: env/management
+    envType: management

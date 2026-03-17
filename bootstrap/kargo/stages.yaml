@@ -1,0 +1,73 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: management-application-generator
+  namespace: homelab-management
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: application-generator
+    sources:
+      direct: true
+  promotionTemplate:
+    spec:
+      vars:
+      - name: gitRepo
+        value: https://github.com/syoder89-homelab/homelab-management
+      - name: targetBranch
+        value: env/management/application-generator
+      - name: path_src
+        value: ./src
+      - name: path_out
+        value: ./out
+      steps:
+      - task:
+          name: prepare-workdir 
+      # We want to use global config for the application-generator
+      # The config-generator chart needs access to the config manifests
+      # Copy config manifests into config-generator chart
+      - uses: copy
+        config:
+          inPath: ${{ vars.path_src }}/config
+          outPath: ${{ vars.path_src }}/charts/config-generator/config/platform
+      # Render the config files from templates
+      - uses: helm-template
+        config:
+          releaseName: config-generator
+          path: ${{ vars.path_src }}/charts/config-generator
+          outLayout: flat
+          outPath: /tmp/values.yaml
+          setValues:
+            - key: envName
+              value: all
+            - key: envType
+              value: all
+            - key: appName
+              value: all
+      # The application-generator chart needs access to the application manifests
+      # Copy application manifests into application-generator chart
+      - uses: copy
+        config:
+          inPath: ${{ vars.path_src }}/applications
+          outPath: ${{ vars.path_src }}/charts/application-generator/applications
+      - uses: helm-template
+        config:
+          releaseName: application-generator
+          path: ${{ vars.path_src }}/charts/application-generator
+          outPath: ${{ vars.path_out }}/deploy
+          valuesFiles:
+          - /tmp/values.yaml
+      - task:
+          name: push-manifests
+        as: promotion
+        vars:
+        - name: asPR
+          value: "true"
+      - uses: argocd-update
+        config:
+          apps:
+          - name: management-root
+            sources:
+            - repoURL: ${{ vars.gitRepo }}
+              desiredRevision: ${{ outputs.promotion.commit }}
