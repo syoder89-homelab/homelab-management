@@ -1,0 +1,84 @@
+---
+# Source: application-generator/templates/application.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: management-argocd
+  namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: homelab-management:management-argocd
+spec:
+  destination:
+    name: in-cluster
+    namespace: argocd
+  project: management
+  source:
+    directory:
+      recurse: true
+    path: deploy/
+    repoURL: https://github.com/syoder89-homelab/homelab-management
+    targetRevision: env/management/argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+    - ClientSideApplyMigration=false
+---
+# Source: application-generator/templates/application.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: management-kargo-config
+  namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: homelab-management:management-kargo-config
+spec:
+  destination:
+    name: in-cluster
+    namespace: homelab-management
+  project: management
+  source:
+    directory:
+      recurse: true
+    path: deploy/
+    repoURL: https://github.com/syoder89-homelab/homelab-management
+    targetRevision: env/management/kargo-config
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+    - ClientSideApplyMigration=false
+---
+# Source: application-generator/templates/application.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: management-kargo
+  namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: homelab-management:management-kargo
+spec:
+  destination:
+    name: in-cluster
+    namespace: kargo
+  project: management
+  source:
+    directory:
+      recurse: true
+    path: deploy/
+    repoURL: https://github.com/syoder89-homelab/homelab-management
+    targetRevision: env/management/kargo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+    - ClientSideApplyMigration=false
