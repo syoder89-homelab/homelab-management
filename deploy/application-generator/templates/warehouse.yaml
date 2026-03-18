@@ -11,6 +11,7 @@ spec:
       branch: main
       commitSelectionStrategy: NewestFromBranch
       discoveryLimit: 10
+      strictSemvers: true
       repoURL: https://github.com/syoder89-homelab/homelab-management.git
       includePaths:
       - applications/argocd
@@ -27,6 +28,7 @@ spec:
       branch: main
       commitSelectionStrategy: NewestFromBranch
       discoveryLimit: 10
+      strictSemvers: true
       repoURL: https://github.com/syoder89-homelab/homelab-management.git
       includePaths:
       - applications/kargo-config
@@ -43,6 +45,7 @@ spec:
       branch: main
       commitSelectionStrategy: NewestFromBranch
       discoveryLimit: 10
+      strictSemvers: true
       repoURL: https://github.com/syoder89-homelab/homelab-management.git
       includePaths:
       - applications/kargo
