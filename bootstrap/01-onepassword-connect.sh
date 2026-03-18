@@ -7,6 +7,12 @@
 #
 # This step cannot be GitOps-driven (chicken-and-egg: the secrets
 # provider needs secrets to exist before it can provide them).
+#
+# WARNING: Ensure your kubectl context is set to the correct cluster
+#          before running this script, or you will overwrite secrets
+#          on the wrong cluster!
+#
+#   kubectl config current-context   # verify before running
 
 set -eu
 
