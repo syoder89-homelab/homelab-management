@@ -86,8 +86,15 @@ applications/              # Umbrella Helm charts
   kargo-config/            # Kargo project config + secrets
 
 bootstrap/                 # One-time cluster setup
-  manifests/               # ArgoCD Applications + AppProjects
-  kargo/                   # Kargo Project + Tasks + Warehouse + Stages
+  01-onepassword-connect.sh  # Deploys 1Password Connect operator
+  02-cert-manager.sh         # Deploys cert-manager
+  03-argocd.sh               # Deploys minimal ArgoCD
+  04-apply-root-apps.sh      # Applies root ArgoCD Applications + AppProjects
+  05-kargo.sh                # Deploys Kargo with admin password
+  bootstrap.sh               # Runs all scripts in order
+  argocd/manifests/          # ArgoCD Applications, AppProjects, GitHub PAT
+  charts/                    # Bootstrap-only Helm charts (cert-manager, 1password)
+  kargo/manifests/           # Kargo Project + Tasks + Warehouse + Stages
 
 charts/                    # Generator charts
   application-generator/   # Generates ArgoCD/Kargo resources
