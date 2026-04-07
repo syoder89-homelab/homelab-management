@@ -35,17 +35,17 @@ spec:
       # Copy config manifests into config-generator chart
       - uses: copy
         config:
-          inPath: "{% vars.path_src %}/config"
-          outPath: "{% vars.path_src %}/charts/config-generator/config/platform"
+          inPath: "${% vars.path_src %}/config"
+          outPath: "${% vars.path_src %}/charts/config-generator/config/platform"
       - uses: copy
         config:
-          inPath: "{% vars.path_src %}/{{ dir $path }}/config"
-          outPath: "{% vars.path_src %}/charts/config-generator/config/application"
+          inPath: "${% vars.path_src %}/{{ dir $path }}/config"
+          outPath: "${% vars.path_src %}/charts/config-generator/config/application"
       # Render the config files from templates
       - uses: helm-template
         config:
           releaseName: config-generator
-          path: "{% vars.path_src %}/charts/config-generator"
+          path: "${% vars.path_src %}/charts/config-generator"
           outLayout: flat
           outPath: /tmp/values.yaml
           setValues:
@@ -61,8 +61,8 @@ spec:
           namespace: {{ $app.namespace | default $app.name }}
           buildDependencies: true
           includeCRDs: true
-          path: "{% vars.path_src %}/{{ dir $path }}"
-          outPath: "{% vars.path_out %}/deploy/{{ $app.name }}"
+          path: "${% vars.path_src %}/{{ dir $path }}"
+          outPath: "${% vars.path_out %}/deploy/{{ $app.name }}"
           valuesFiles:
           - /tmp/values.yaml
       - task:
@@ -78,8 +78,8 @@ spec:
           apps:
           - name: {{ $env_name }}-{{ $app.name }}
             sources:
-            - repoURL: "{% vars.gitRepo %}"
-              desiredRevision: "{% outputs.promotion.commit %}"
+            - repoURL: "${% vars.gitRepo %}"
+              desiredRevision: "${% outputs.promotion.commit %}"
 {{- end }}
 {{- end }}
 {{- end }}
