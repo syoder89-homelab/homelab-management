@@ -66,6 +66,8 @@ spec:
         vars:
         - name: asPR
           value: "true"
+        - name: commitMessage
+          value: "${% commitFrom(vars.gitRepo)?.Message ?? '' %}"
         - name: targetBranch
           value: env/management/argocd
       - uses: argocd-update
@@ -143,6 +145,8 @@ spec:
         vars:
         - name: asPR
           value: "true"
+        - name: commitMessage
+          value: "${% commitFrom(vars.gitRepo)?.Message ?? '' %}"
         - name: targetBranch
           value: env/management/kargo-config
       - uses: argocd-update
@@ -220,6 +224,8 @@ spec:
         vars:
         - name: asPR
           value: "true"
+        - name: commitMessage
+          value: "${% commitFrom(vars.gitRepo)?.Message ?? '' %}"
         - name: targetBranch
           value: env/management/kargo
       - uses: argocd-update
